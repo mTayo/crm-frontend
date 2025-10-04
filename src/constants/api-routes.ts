@@ -11,5 +11,6 @@ export const API_ROUTES = {
     CREATE_JOB: '/job/create',
     UPDATE_JOB_STATUS: '/job',
     CREATE_JOB_APPOINTMENT: '/appointment/create',
+    CREATE_JOB_INVOICE: '/appointment/create',
   
 };

@@ -33,6 +33,7 @@ import { useState } from "react";
 import axios from "axios";
 import ScheduleJob from "@/components/page-extensions/ScheduleJob";
 import { JobDetailsSheet } from "@/components/page-extensions/ViewJob";
+import GenerateInvoiceForm from "@/components/page-extensions/GenerateInvoiceForm";
 
 
 interface Job { 
@@ -230,47 +231,8 @@ export default function HomePage() {
       </div>
 
       {/* Sheet */}
-      <JobDetailsSheet open={open}setOpen={setOpen} loading={loading} selectedJob={selectedJob} />
-      {/* <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="w-[400px] px-4 sm:w-[500px]">
-          {loading? (
-            <>
-            <SheetHeader className="py-4 px-0">
-                <SheetTitle>{selectedJob?.title}</SheetTitle>
-                <SheetDescription>
-                  Job details for <strong>{selectedJob?.customer?.name}</strong>
-                </SheetDescription>
-              </SheetHeader>
-              <div className="max-h-screen  flex antialiased relative">
-               
-                    <div className="w-full   text-white flex items-center justify-center p-8">
-                        <div className="">
-                            <HashLoader color="#1b1917" size={100} />
-                        </div>
-                    </div>
-                </div>
-            </>
-          ): (
-            <>
-              <SheetHeader className="py-4 px-0">
-                <SheetTitle>{selectedJob?.title}</SheetTitle>
-                <SheetDescription>
-                  Job details for <strong>{selectedJob?.customer?.name}</strong>
-                </SheetDescription>
-              </SheetHeader>
-              <div className="mt-4 space-y-2">
-                <p><strong>Status:</strong> {selectedJob?.status}</p>
-                <p><strong>Customer:</strong> {selectedJob?.customer.name}</p>
-                <p><strong>Email:</strong> {selectedJob?.customer.email}</p>
-                <p><strong>Phone:</strong> {selectedJob?.customer.phone}</p>
-                <p><strong>Address:</strong> {selectedJob?.customer.address}</p>
-                <p><strong>Description:</strong> {selectedJob?.description}</p>
-                <p><strong>Created At:</strong> {new Date(selectedJob?.createdAt || "").toLocaleString()}</p>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet> */}
+      <JobDetailsSheet open={open} setOpen={setOpen} loading={loading} selectedJob={selectedJob} />
+  
 
       {/* SCHEDULE JOB SHEET */}
       <Sheet open={openSheet === "schedule"} onOpenChange={() => setOpenSheet(null)}>
@@ -289,45 +251,20 @@ export default function HomePage() {
       </Sheet>
 
       {/* INVOICE SHEET */}
+      
       <Sheet open={openSheet === "invoice"} onOpenChange={() => setOpenSheet(null)}>
-        <SheetContent>
+        <SheetContent className="overflow-y-scroll">
           <SheetHeader>
             <SheetTitle>Generate Invoice</SheetTitle>
             <SheetDescription>
               Add invoice items for this job.
             </SheetDescription>
           </SheetHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <Label>Description</Label>
-              <Input id="desc" placeholder="E.g., Service charge" />
-            </div>
-            <div>
-              <Label>Amount</Label>
-              <Input id="amount" type="number" placeholder="Enter amount" />
-            </div>
+          <div className="space-y-4 py-4 px-4">
+            <GenerateInvoiceForm   jobId={selectedJob?.id || ''}  />
+            
           </div>
-          <SheetFooter>
-            <Button
-              onClick={async () => {
-                const description = (document.getElementById("desc") as HTMLInputElement).value;
-                const amount = parseFloat((document.getElementById("amount") as HTMLInputElement).value);
-
-                try {
-                  await axios.post(
-                    `https://crm-backend-fnz1.onrender.com/api/jobs/${selectedJob?.id}/invoice`,
-                    { lineItems: [{ description, amount }] }
-                  );
-                  toast.success("Invoice generated successfully");
-                  setOpenSheet(null);
-                } catch {
-                  toast.error("Failed to generate invoice");
-                }
-              }}
-            >
-              Generate
-            </Button>
-          </SheetFooter>
+         
         </SheetContent>
       </Sheet>
 

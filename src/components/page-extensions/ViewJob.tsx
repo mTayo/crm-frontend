@@ -131,6 +131,50 @@ export function JobDetailsSheet({
                     </>
                     )}
 
+                     {/* Invoice Section */}
+                    {selectedJob?.invoice && (
+                        <>
+                          <Separator />
+                            <h3 className="font-medium text-lg mb-4">Invoice</h3>
+                        
+                        
+                            <p><strong>Invoice ID:</strong> {selectedJob.invoice.id}</p>
+                            {/* Line items */}
+                            <div className="space-y-2">
+                            <h4 className="font-medium text-base">Line Items</h4>
+
+                            <div className="space-y-3">
+                            {selectedJob?.invoice?.lineItems.map((item: any, idx: number) => (
+                                <div
+                                key={item.id || idx}
+                                className="border rounded-lg p-3 bg-muted/10"
+                                >
+                                <p className="font-medium text-sm truncate">
+                                    {item.description}
+                                </p>
+                                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                                    <span>Qty: {item.quantity}</span>
+                                    <span>Unit: ${item.unitPrice}</span>
+                                    <span>Total: ${item.lineTotal}</span>
+                                </div>
+                                </div>
+                            ))}
+                            </div>
+                            </div>
+                             <p><strong>Subtotal:</strong> ${selectedJob.invoice.subtotal.toFixed(2)}</p>
+                            <p><strong>Tax:</strong> ${selectedJob.invoice.tax.toFixed(2)}</p>
+                            <p className="font-semibold text-lg">
+                            Total: ${selectedJob?.invoice?.total?.toFixed(2)}
+                            </p>
+                            <p className="text-muted-foreground text-xs">
+                            Created at: {new Date(selectedJob?.invoice?.createdAt).toLocaleString()}
+                            </p>
+
+
+                        
+                        </>
+                        )}
+
                     {/* Job History (Timeline) */}
                     {selectedJob?.history?.length > 0 && (
                     <>
