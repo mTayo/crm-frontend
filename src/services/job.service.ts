@@ -26,6 +26,8 @@ class JobService {
 
     createJobInvoice = async (data: any, jobId: string) => ApiRequestClient.post(`/job/${jobId}/invoice`, data);
 
+    getAllAppointments = async () => ApiRequestClient.get(`/appointment`);
+
     createInvoicePayment = async (data: any, invoiceId: string) => ApiRequestClient.post(`/invoice/${invoiceId}/payments`, data);
 }
 

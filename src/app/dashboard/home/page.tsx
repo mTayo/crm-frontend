@@ -22,15 +22,11 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetFooter,
 } from "@/components/ui/sheet"
 import { JobServiceApi } from "@/services/job.service";
 import { toast } from "sonner";
-import HashLoader from "react-spinners/HashLoader";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import axios from "axios";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useMemo, useState } from "react";
 import ScheduleJob from "@/components/page-extensions/ScheduleJob";
 import { JobDetailsSheet } from "@/components/page-extensions/ViewJob";
 import GenerateInvoiceForm from "@/components/page-extensions/GenerateInvoiceForm";
@@ -52,6 +48,17 @@ interface Job {
   createdAt: string
 }
 
+const statusTabs = [
+  { label: "All", value: "all" },
+  { label: "New", value: "NEW" },
+  { label: "Scheduled", value: "SCHEDULED" },
+  { label: "Done", value: "DONE" },
+  { label: "Invoiced", value: "INVOICED" },
+  { label: "Paid", value: "PAID" },
+]
+
+
+
 export default function HomePage() {
   const { jobs, updateState } = useAuthStore();
   const [selectedJob, setSelectedJob] = React.useState<Job | null>(null);
@@ -59,6 +66,13 @@ export default function HomePage() {
   const [openSheet, setOpenSheet] = useState<null | "schedule" | "invoice" | "payment">(null);
 
   const [loading, setLoading] = React.useState(false);
+  const [activeStatus, setActiveStatus] = useState("all")
+
+  // Filter jobs based on selected tab
+  const filteredData = useMemo(() => {
+    if (activeStatus === "all") return jobs
+    return jobs.filter((job) => job.status === activeStatus)
+  }, [activeStatus, jobs])
 
    const handleView = async (jobId: string) => {
     try {
@@ -149,7 +163,6 @@ export default function HomePage() {
 
         <DropdownMenuContent align="end" className="w-40">
           {/* View is always available */}
-          {/* <DropdownMenuItem onClick={() => handleView(row?.original?.id)}></DropdownMenuItem> */}
           <DropdownMenuItem
             onClick={() => handleView(row?.original?.id)}
           >
@@ -226,7 +239,22 @@ export default function HomePage() {
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           <SectionCards />
           <div className="px-4">
-            <BasicTable data={jobs} columns={columns} />
+            <div className="mb-4">
+              <Tabs value={activeStatus} onValueChange={setActiveStatus}>
+                <TabsList className="w-full justify-start overflow-x-auto flex-wrap">
+                  {statusTabs.map((tab) => (
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className="capitalize text-sm px-4"
+                    >
+                      {tab.label}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+            </div>
+            <BasicTable data={filteredData} columns={columns} />
           </div>
         </div>
       </div>

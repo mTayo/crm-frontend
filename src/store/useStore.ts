@@ -19,6 +19,7 @@ interface AuthState {
   customers: any[];
   jobs: any[];
   technicians: any[];
+  appointments: any[];
   token: string | null;
   dataLoading: boolean;
   appInitialized: boolean;
@@ -40,6 +41,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   customers:[],
   jobs: [],
   technicians: [],
+  appointments: [],
 
   logout: () => {
     Cookies.remove("access_token");
@@ -48,11 +50,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   fetchAdminData: async () => {
     try {
-      const [userRes, customerRes, jobRes, techniciansRes]:any = await Promise.allSettled([
+      const [userRes, customerRes, jobRes, techniciansRes, appointmentsRes]:any = await Promise.allSettled([
         AuthServiceApi.getUser(),
         CustomerServiceApi.fetchCustomers(),
         JobServiceApi.getAllJobs(),
-        TechniciansServiceApi.getAllTechnicians()
+        TechniciansServiceApi.getAllTechnicians(),
+        JobServiceApi.getAllAppointments()
       ]);
 
       if (userRes.status === "fulfilled") {
@@ -89,6 +92,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         set({
           jobs: jobData || [],
+        });
+      }
+
+      if (appointmentsRes.status === "fulfilled") {
+    
+        const appointmentsData = appointmentsRes.value?.data?.data;
+
+        set({
+          appointments: appointmentsData || [],
         });
       }
 
