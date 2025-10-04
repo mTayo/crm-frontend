@@ -25,6 +25,8 @@ class JobService {
         }) => ApiRequestClient.post(`${API_ROUTES.CREATE_JOB_APPOINTMENT}`, data);
 
     createJobInvoice = async (data: any, jobId: string) => ApiRequestClient.post(`/job/${jobId}/invoice`, data);
+
+    createInvoicePayment = async (data: any, invoiceId: string) => ApiRequestClient.post(`/invoice/${invoiceId}/payments`, data);
 }
 
 export const JobServiceApi = new JobService();

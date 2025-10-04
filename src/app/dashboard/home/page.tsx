@@ -34,6 +34,7 @@ import axios from "axios";
 import ScheduleJob from "@/components/page-extensions/ScheduleJob";
 import { JobDetailsSheet } from "@/components/page-extensions/ViewJob";
 import GenerateInvoiceForm from "@/components/page-extensions/GenerateInvoiceForm";
+import RecordPaymentForm from "@/components/page-extensions/RecordPayment";
 
 
 interface Job { 
@@ -277,33 +278,11 @@ export default function HomePage() {
               Add payment details for this job’s invoice.
             </SheetDescription>
           </SheetHeader>
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 px-4">
             <div>
-              <Label>Amount</Label>
-              <Input id="pay-amount" type="number" placeholder="Enter payment amount" />
+              <RecordPaymentForm selectedJob={selectedJob} />
             </div>
           </div>
-          <SheetFooter>
-            <Button
-              onClick={async () => {
-                const amount = parseFloat((document.getElementById("pay-amount") as HTMLInputElement).value);
-                try {
-                  await axios.post(
-                    `https://crm-backend-fnz1.onrender.com/api/invoices/${selectedJob?.id}/payments`,
-                    { amount }
-                  );
-                  toast.success("Payment recorded successfully");
-                  setOpenSheet(null);
-                } catch (err: any) {
-                  if (err.response?.status === 400)
-                    toast.error("Payment exceeds remaining balance");
-                  else toast.error("Failed to record payment");
-                }
-              }}
-            >
-              Record Payment
-            </Button>
-          </SheetFooter>
         </SheetContent>
       </Sheet>
 

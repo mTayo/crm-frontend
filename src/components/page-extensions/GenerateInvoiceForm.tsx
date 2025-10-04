@@ -31,7 +31,7 @@ interface InitialState {
 }
 
 const GenerateInvoiceForm = ({ jobId }: { jobId: string }) => {
-const {  jobs, updateState } = useAuthStore();
+    const {  jobs, updateState } = useAuthStore();
   const initialState: InitialState = {
     lineItems: [{ description: "", quantity: 1, unitPrice: 0 }],
     errors: {},
