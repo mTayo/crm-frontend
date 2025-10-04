@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import { ApiRequestClient } from "@/services/abstract.service";
 import { AuthServiceApi } from "@/services/auth.service";
 import { CustomerServiceApi } from "@/services/customer.service";
+import { JobServiceApi } from "@/services/job.service";
+import { TechniciansServiceApi } from "@/services/technicians.service";
 
 interface User {
   id: string;
@@ -15,6 +17,8 @@ interface User {
 interface AuthState {
   user: User | null;
   customers: any[];
+  jobs: any[];
+  technicians: any[];
   token: string | null;
   dataLoading: boolean;
   appInitialized: boolean;
@@ -34,6 +38,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   appInitialized: false,
   error: null,
   customers:[],
+  jobs: [],
+  technicians: [],
 
   logout: () => {
     Cookies.remove("access_token");
@@ -42,9 +48,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   fetchAdminData: async () => {
     try {
-      const [userRes, customerRes]:any = await Promise.allSettled([
+      const [userRes, customerRes, jobRes, techniciansRes]:any = await Promise.allSettled([
         AuthServiceApi.getUser(),
-        CustomerServiceApi.fetchCustomers()
+        CustomerServiceApi.fetchCustomers(),
+        JobServiceApi.getAllJobs(),
+        TechniciansServiceApi.getAllTechnicians()
       ]);
 
       if (userRes.status === "fulfilled") {
@@ -63,6 +71,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({
           customers: customerData || [],
           
+        });
+      }
+
+      if (techniciansRes.status === "fulfilled") {
+    
+        const techniciansData = techniciansRes.value?.data?.data;
+        set({
+          technicians: techniciansData || [],
+          
+        });
+      }
+
+      if (jobRes.status === "fulfilled") {
+    
+        const jobData = jobRes.value?.data?.data;
+
+        set({
+          jobs: jobData || [],
         });
       }
 

@@ -9,6 +9,20 @@ import { ApiRequestClient } from './abstract.service';
  */
 class JobService {
     createNewJob = async (data: any) => ApiRequestClient.post(`${API_ROUTES.CREATE_JOB}`, data);
+
+    updateJobStatus = async (data: {id:string, status:string}) => ApiRequestClient.put(`${API_ROUTES.UPDATE_JOB_STATUS}`, data);
+
+    getAllJobs = async (params={}) =>   ApiRequestClient.get(API_ROUTES.GET_ALL_JOBS, { params })
+
+    getSingleJob = async (jobId:string) =>   ApiRequestClient.get(API_ROUTES.GET_ALL_JOBS+`/${jobId}`)
+
+    createJobAppointment = async (data: 
+        {
+        jobId: string,
+        technician: string,
+        startTime: string,
+        endTime: string
+        }) => ApiRequestClient.post(`${API_ROUTES.CREATE_JOB_APPOINTMENT}`, data);
 }
 
 export const JobServiceApi = new JobService();

@@ -21,6 +21,7 @@ class AuthService {
      * @returns {*} function
      */
     logIn = async (payload: {email: string, password: string}) => ApiRequestClient.post(`${API_ROUTES.LOGIN}`, payload);
+    
      
 }
 
